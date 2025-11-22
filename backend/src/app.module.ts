@@ -4,6 +4,10 @@ import { AppService } from './app.service';
 import { LoginModule } from './login/login.module';
 import { TypeOrmModule} from '@nestjs/typeorm';
 import { User } from './login/user.entity';
+import { TaskModule } from './task/task.module';
+import { CategoryModule } from './category/category.module';
+import { Task } from './entities/task.entity';
+import { Category } from './entities/category.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -12,12 +16,12 @@ import { User } from './login/user.entity';
       username: 'root',
       password: '',
       database: 'tracker_db',
-      entities: [User],
+      entities: [User,Task,Category],
       synchronize:true,
       extra: {
         socketPath: '/System/Volumes/Data/private/tmp/mysql.sock',
       },
-    }),LoginModule
+    }),LoginModule, TaskModule, CategoryModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,12 +2,13 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "./lib/supabaseClient";
 import { axiosApi } from "./lib/axiosApi";
+import { useRouter } from "next/navigation";
 export default function Login() {
 
   const [width,setWidth] = useState<number>(0);
   const[username,setUsername] = useState<string>('');
   const [password,setPassword] = useState<string>('');
-
+  const router = useRouter();
   const signUp = async (username:string,password:string) => {
     try {
       const res = await axiosApi.post("/login/signup",{
@@ -17,7 +18,9 @@ export default function Login() {
 
       if (res.data.access_token){
         localStorage.setItem("token",res.data.access_token);
+        localStorage.setItem("userId",res.data.userId);
         alert("Signup successful! You are now logged in.");
+        router.push("/dashboard")
       }
 
       return res.data;
@@ -47,7 +50,9 @@ export default function Login() {
 
       if (res.data.access_token){
         localStorage.setItem("token",res.data.access_token);
+        localStorage.setItem("userId",res.data.userId);
         alert("login successful! You are now logged in.");
+        router.push("/dashboard")
       }
     }
     catch(err){
@@ -77,12 +82,12 @@ export default function Login() {
   },[])
 
   return (
-    <div className="h-full p-[50px] ">
+    <div className="h-full p-[50px] md:m-auto mt-[50px] ">
 
       <div className="flex md:items-center justify-center flex-col md:flex-row  ">
 
-      { width> 768 && <div className=" text-center full h-[650px] md:w-[80vw] border-amber-50 border-[1px] rounded-tl-[10%] rounded-tr-[2%] rounded-br-[2%] rounded-bl-[10%]">About Section</div>}
-      <div className="h-[650px] md:w-[80vw] flex md:space-y-[50px] border-[1px] border-amber-50 md:rounded-[10%] rounded-[5%]  md:rounded-tl-[2%] md:rounded-bl-[2%] text-center flex-col space-y-5 p-[20px] justify-center md:items-center">
+      { width> 768 && <div className=" text-center full h-[650px] md:w-[80vw] border-amber-50 border rounded-tl-[10%] rounded-tr-[2%] rounded-br-[2%] rounded-bl-[10%]">About Section</div>}
+      <div className="h-[650px] md:w-[80vw] flex md:space-y-[50px] border border-amber-50 md:rounded-[10%] rounded-[2%]  md:rounded-tl-[2%] md:rounded-bl-[2%] text-center flex-col space-y-5 p-[20px] justify-center md:items-center">
         <p className="text-2xl">Login Section</p>
         <div  className="space-y-5 flex md:space-y-[50px] flex-col">
           <div className="flex flex-col space-x-2 items-center text-center">
