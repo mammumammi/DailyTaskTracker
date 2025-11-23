@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "./lib/supabaseClient";
 import { axiosApi } from "./lib/axiosApi";
 import { useRouter } from "next/navigation";
+import { Oswald } from "next/font/google";
 export default function Login() {
 
   const [width,setWidth] = useState<number>(0);
