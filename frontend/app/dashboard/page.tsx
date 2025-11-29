@@ -130,7 +130,7 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
     const maxHours = Math.max(...Object.values(data).map( v=> v as number),1);
 
     return (
-      <div className='flex flex-col p-4 h-full'>
+      <div className='flex flex-col p-4 h-[40%]'>
         <div className='-mb-4'> 
           <p>{title}</p>
           <p>TotalHours: {totalHours.toFixed(1)} hours</p>
@@ -144,7 +144,7 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
 
             return (
               <div key={category} className='flex-1 h-full flex flex-col items-center gap-2'>
-                <div className='w-full h-[170px] flex flex-col items-center justify-end'>
+                <div className='w-full h-[130px] mt-7 flex flex-col items-center justify-end'>
                   <span className='text-sm font-semibold mb-1'>{(hours as number).toFixed(1)}h</span>
                   <div className='w-full relative rounded-t-lg transition-all duration-500'
                   style={{
@@ -228,7 +228,7 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
         </svg>
         <div className='inset-0 flex absolute items-center justify-center'>
           <div className='text-center'>
-            <div className='text-2xl font-bold'>{totalDailyHours.toFixed(1)}</div>
+            <div className='text-2xl font-bold text-[#14213d]'>{totalDailyHours.toFixed(1)}</div>
             <div className='text-xs text-gray-400'>hours</div>
           </div>
         </div>
@@ -261,7 +261,7 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
     setWidth(window.innerWidth)
   },[])
   return (
-    <div>
+    <div className=''>
       <Navbar/>
       <div className='md:ml-[10vw] p-[25px] md:p-[15px] space-y-5'>
         <p className='text-3xl'>Dashboard</p>
@@ -287,7 +287,7 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
                 </p>
               </div>
               <div 
-                className='px-3 py-1 mr-4 mb-4 rounded-full text-sm font-semibold'
+                className='px-3 py-1 mr-4 mb-4 rounded-full text-sm font-semibold text-[#14213d]'
                 style={{ backgroundColor: activeTask.categories[0]?.colour || '#6b7280' }}
               >
                 {activeTask.categories[0]?.name}
@@ -346,10 +346,10 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
                     <span>{task.end_time}</span>
                   </div>
                   
-                  <div className='text-xl font-bold mb-3'>{task.no_of_hours}h</div>
+                  <div className='text-xl font-bold mb-3 '>{task.no_of_hours}h</div>
                   
                   <div 
-                    className='px-3 py-1 rounded-full text-xs font-semibold inline-block'
+                    className='px-3 py-1 rounded-full text-xs font-semibold text-[#14213d] inline-block'
                     style={{ backgroundColor: task.categories[0]?.colour || '#6b7280' }}
                   >
                     {task.categories[0]?.name}

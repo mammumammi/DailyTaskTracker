@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 const Navbar = () => {
     const [width,setWidth] = useState<number>(0);
     const [full,setFull] = useState<boolean>(false);
+    const [open,setOpen] = useState<boolean>(false);
     const router = useRouter();
     const fullscreen = () => {
         setFull(!full);
@@ -17,8 +18,11 @@ const Navbar = () => {
   return (
     <div>
         {width > 768 ? 
-            <div className='w-[10vw] bg-[#0c1821] h-[100vh] py-4 fixed pl-3'>
-                <p>Navigation</p>
+            
+            <div className='w-[10vw] bg-[#0c1821] h-[100vh] flex flex-col   justify-between fixed '>
+                <div className='h-[90vh] pl-3  py-4'>
+                
+                 <p>Navigation</p>
                 <div className='flex py-5 pl-1 flex-col space-y-3 '>
                     <div className='cursor-pointer' onClick={() => {
                         router.push("/timetable");
@@ -28,7 +32,15 @@ const Navbar = () => {
                         router.push("/dashboard")
                     }}>Dashboard</div>
                     
+                    
+                </div>
+                </div>
+                <div className=''>
 
+                <button className='cursor-pointer p-2 bg-[#e5e5e5] text-[#14213d] text-center w-[80%] rounded-[15px] ml-3 ' onClick={() => {
+                    localStorage.removeItem('token');
+                    router.push("/");
+                }}>Log Out</button>
                 </div>
             <div>
 

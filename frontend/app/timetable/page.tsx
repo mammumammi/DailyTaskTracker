@@ -5,18 +5,24 @@ import { axiosApi } from '../lib/axiosApi';
 import Navbar from '../components/Navbar';
 
 const page = () => {
+    
+    const [isTimerRunning,setIsTimerRunning] = useState<boolean>(false);
+    const [timerSeconds,setTimerSeconds] = useState<number>(0);
+    const [timerStartTime,setTimerStartTime] = useState<Date | null>(null);
+    
     const [catName,setCatName] = useState<string>("");
     const [catColour,setCatColour] = useState<string>("#ffffff");
     const [fetchedCat,setFetchedCat] = useState<{id:number; name:string; colour:string;}[]>([]);
     const [taskName,setTaskName]= useState<string>("");
     const [startTime,setStartTime] = useState<string>("00:00");
     const [endTime,setEndTime] = useState<string>("00:00");
+    const [selectCatName,setSelectCatName] = useState<string>("");
     const [ date,setDate] = useState<Date>();
     const [formattedDate,setFormattedDate] = useState<string>("");
     const [no_of_hours,setNo_of_hours] = useState<number>(0);
     const [catId,setCatId] = useState<number>();
-    
-    
+    const [categoryOpen,setCategoryOpen] = useState<boolean>(false);
+    const [selectCat,setSelectCat] = useState<boolean>(false);
     const [currentWeekStart,setCurrentWeekStart] = useState<Date>(new Date());
     const [week,setWeek] = useState<Date[]>([]);
     const hours = Array.from({length:24},(_,i) => {
@@ -33,6 +39,15 @@ const page = () => {
     console.log(today);
 
     const [TaskList,setTaskList] = useState<{name:string; start_time:string; end_time:string; date:Date; formattedDate:string;no_of_hours:number;userId:number;categories: {id: number; name: string; colour: string;}[];}[]>([]);
+
+
+    const formatTimerDisplay = (seconds:number) => {
+        const hours = Math.floor(seconds/3600);
+        const minutes = Math.floor((seconds%3600)/60);
+        const secs = seconds%60;
+
+        return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+    }
 
     const fetchTask = async () => {
         try {
@@ -87,8 +102,41 @@ const page = () => {
     }
 
     const startTimer = () => {
+        if (isTimerRunning) {
+            setIsTimerRunning(false);
 
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2,'0');
+            const minutes = now.getHours().toString().padStart(2,'0');
+            setEndTime(`${hours}:${minutes}`);
+
+
+        }
+        else{
+            const now = new Date();
+            const hours = now.getHours().toString().padStart(2,'0');
+            const minutes = now.getHours().toString().padStart(2,'0');
+            setStartTime(`${hours}:${minutes}`);
+            setTimerStartTime(now);
+            setTimerSeconds(0);
+            setIsTimerRunning(true);
     }
+}
+    useEffect( ()=> {
+        let interval: NodeJS.Timeout;
+
+        if (isTimerRunning && timerStartTime){
+            interval = setInterval( ()=> {
+                const now = new Date();
+                const diff = Math.floor((now.getTime() - timerStartTime.getTime())/1000);
+                setTimerSeconds(diff);
+            },1000)
+        }
+        return () => {
+            if (interval) clearInterval(interval);
+        };
+    },[isTimerRunning,timerStartTime])
+
     const submitCat = async () => {
         try {
             const res  = await axiosApi.post(`/category`,{
@@ -166,15 +214,28 @@ const page = () => {
         return hours +min/60;
     }
 
+    const hexToRgba = (hex:string, alpha:number) => {
+        if (!hex || hex.length < 7) {
+            return `rgba(107, 114, 128, ${alpha})`; 
+        }
+        const r = parseInt(hex.slice(1, 3), 16);
+        const g = parseInt(hex.slice(3, 5), 16);
+        const b = parseInt(hex.slice(5, 7), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
+
     const getTaskStyle = (task:any) => {
         const startPos = timeToPosition(task.start_time);
         const endPos = timeToPosition(task.end_time);
         const duration = endPos - startPos;
 
         return{
+            
             left:`${startPos*175}px`,
             width:`${duration*175}px`,
-            backgroundColor: task.categories[0]?.colour || "#ffffff"
+            border:`2px solid  ${hexToRgba(task.categories[0]?.colour, 0.6)}`,
+            backgroundColor:'#011502',
+        
         }
     }
 
@@ -198,33 +259,34 @@ const page = () => {
     useEffect(() => {
      
         
-        
+            
             fetchCategory();
             fetchTask();
        
     }, []);
   return (
-    <div className='mt-[20px]'>
+    <div className=' bg-[#1b1b1e]  h-[100vh] overflow-hidden relative'>
         <Navbar/>
-        <div className='ml-[10vw]'>
-        <p>Activity Chart</p>
-        <div className='flex flex-col  space-y-5 py-[50px]'>
-
-        <div className='bg-[#0A0815] p-4 rounded-lg mt-8'>
-    <h3 className='text-lg font-semibold mb-3 text-center'>Categories</h3>
-    <div className='flex flex-wrap gap-4 text-center justify-center items-center'>
-        {fetchedCat.map(cat => (
-            <div key={cat.id} className='flex items-center gap-2'>
-                <div 
+        <div className='md:ml-[10vw]'>
+        <p className='bg-[#1b1b1e] py-1 mt-5'>Activity Chart</p>
+        <div className='flex flex-col  md:space-y-5 md:py-[50px]'>
+        <div className='bg-[#1b1b1e] relative h-[45vh] md:h-[30vh]'>
+            <div className='fixed'>
+            <div className='bg-[#1b1b1e] md:p-4 w-[84vw]   rounded-lg mt-8 '>
+            <h3 className='text-lg font-semibold mb-3 text-center'>Categories</h3>
+            <div className='flex flex-wrap gap-4 text-center justify-center items-center'>
+            {fetchedCat.map(cat => (
+                <div key={cat.id} className='flex items-center gap-2'>
+                    <div 
                     className='w-4 h-4 rounded' 
                     style={{backgroundColor: cat.colour}}
-                />
-                <span className='text-sm'>{cat.name}</span>
+                    />
+                    <span className='text-sm'>{cat.name}</span>
+                </div>
+            ))}
             </div>
-        ))}
-    </div>
-</div>
-       <div className='flex items-center justify-between p-2 mt-5'>
+        </div>
+       <div className='flex items-center justify-between  p-1 md:p-2 mt-5 w-[88vw]'>
             <button onClick={goToPreviousWeek} className='p-2 bg-[#192932] rounded-md'>← Previous</button>
             <div className='text-center'>
                 <p className='mb-1'>{today}</p>
@@ -233,17 +295,17 @@ const page = () => {
                 </p>
             </div>
             <div className='flex gap-2'>
-                <button className='p-2 bg-[#2F243A] rounded-md' onClick={goToToday}>Today</button>
-                <button className='p-2 bg-[#321427] rounded-md' onClick={goToNextWeek}>Next →</button>
+                <button className='p-2 bg-[#38040e] rounded-md' onClick={goToToday}>Today</button>
+                <button className='p-2 bg-[#001c55] rounded-md' onClick={goToNextWeek}>Next →</button>
             </div>
         </div>     
             
-        <div className='md:left-[65%] md:top-[5%] justify-center md:absolute z-75 bg-[#160521] p-5 relative' >
-            { !sched &&   <button className='bg-[#471766] px-4 md:px-2 p-[5px] md:w-[200px] md:left-[18vw] md:absolute text-[#F1F0EA] text-2xl rounded-md ' onClick={() => {
+        <div className='md:left-[65%] md:top-[5%] justify-center md:absolute z-50  p-5 relative' >
+            { !sched &&   <button className='bg-[#471766] px-4 md:px-2 md:h-auto  p-[5px] md:w-[200px] md:left-[15vw] md:absolute text-[#F1F0EA] text-2xl rounded-md block mx-auto' onClick={() => {
                 setSched(!sched)
             }}>Create Schedule</button> }
-            { sched && <div className='space-y-5'>
-                <div className='space-y-3 flex flex-col'>
+            { sched && <div className='space-y-5  bg-[#1a1423]  md:ml-[10vw]'>
+                <div className='space-y-3 -mt-[25vh] p-3 md:-mt-[70px]   z-75 bg-[#1a1423] flex flex-col'>
                 {/* Start Timer function or Set time for past activities */}
                 <input type="text" className='border rounded-md p-1 text-gray-300' placeholder=' Activity Name' value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
@@ -253,12 +315,12 @@ const page = () => {
                 {/* DropDownList */}
                 <div className='relative'>
         
-        <div className='flex flex-row justify-between text-gray-500 '>select a category
+        <div className='flex flex-row justify-between text-gray-500 '>{!selectCat ?  'select a category': `${selectCatName}`}
 
         <div className='text-white pr-[15px] cursor-pointer' onClick={ () =>{setOpen(!open)}}>▼</div>
         </div>
         {open && 
-        <div className='flex flex-col rounded-md bg-[#2C2A2F] '>
+        <div className='flex flex-col rounded-md overflow-scroll  bg-[#2C2A2F] '>
             <div>
             <div className='cursor-pointer p-2'  onClick={() => setCatOpen(!catOpen)} >Create a category</div>
             {catOpen && 
@@ -272,7 +334,12 @@ const page = () => {
                     </div>
                     <div className='w-full text-center flex items-center justify-center rounded-md p-2'>
 
-                    <button type='submit' className='bg-[#0A0815] w-fit text-center flex items-center justify-center rounded-md p-2' onClick={submitCat}>Create Category</button>
+                    <button type='submit' className='bg-[#0A0815] w-fit text-center flex items-center justify-center rounded-md p-2' onClick={() => {
+                        submitCat();
+                        setCatOpen(!catOpen);
+                        setOpen(!open);
+                        setSelectCat(!selectCat);
+                    }}>Create Category</button>
                     </div>
                 </div>}
             </div>
@@ -282,7 +349,12 @@ const page = () => {
             <hr  className='text-gray-500'/>
             {fetchedCat.map( (cat,id) => (
                 <div key={id} className='cursor-pointer'
-                onClick={() => setCatId(cat.id)}
+                onClick={() => {setCatId(cat.id)
+                    setOpen(!open);
+                    setSelectCatName(cat.name);
+                    setSelectCat(!selectCat);
+
+                }}
                 >
                 <div  className='text-gray-200 flex flex-row justify-around p-2' >
                     <p>{cat.name}</p>
@@ -298,8 +370,17 @@ const page = () => {
                 </div>
                 
                 
-
-                <button className='bg-[#471766] text-[#F1F0EA] p-[5px] rounded-md' onClick={startTimer}>Start Time Now</button>
+                {isTimerRunning && (
+        <div className='bg-[#2d1f3d] p-3 text-center border-t border-[#5a1d7f]'>
+            <div className='text-3xl font-mono text-[#10b981] font-bold animate-pulse'>
+                {formatTimerDisplay(timerSeconds)}
+            </div>
+            <div className='text-xs text-gray-400 mt-1'>
+                Started at {startTime}
+            </div>
+        </div>
+    )}
+                <button className='bg-[#471766] text-[#F1F0EA] p-[5px] rounded-md' onClick={startTimer}>{isTimerRunning ? '⏸ Stop Timer' : '▶ Start Timer Now'}</button>
                 <div className='md:space-x-3 md:space-y-0 space-y-3 flex md:flex-row flex-col'>
                     <input type="time" className='border p-1 rounded-md text-gray-300' placeholder=' Starting Time ' value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
@@ -310,25 +391,27 @@ const page = () => {
                     />
                 </div>
                 </div>
-                <div className='flex flex-row w-full justify-around'>Goal Hours <input type='text' className='border md:flex md:justify-end md:flex-row rounded-md w-[50px] text-center ml-3' placeholder='eg:0'></input>
-                <div className='border p-[2px] bg-[#F1F0EA] text-black rounded-md px-[4px] cursor-pointer' onClick={() => {setSched(!sched);
+                <div className='flex flex-row justify-center items-center'>
+                <div className='border p-[2px] bg-[#F1F0EA] text-black text-center rounded-md px-[4px] cursor-pointer' onClick={() => {setSched(!sched);
                     submitTask();
                 }}>Create</div>
                 </div>
                 </div>}
            
         </div>
-        <div className='relative'>
-            <div className='flex flex-row z-0 left-[175px + 10vw] absolute '>
+        </div>
+        </div>
+        <div className='relative h-[55vh] bg-[#080708] md:h-[70vh] overflow-scroll hide-scrollbar'>
+            <div className='flex flex-row z-0 left-[175px] absolute bg-[#080708]'>
                 {hours.map((t,i) => (
-                    <div className='border  border-gray-800 w-[175px] h-[1430px] px-[8px]'  key={i}>{t}</div>
+                    <div className='border  border-gray-800 w-[175px]  h-[715px] md:h-[1430px] px-[8px]'  key={i}>{t}</div>
                 ))}
             </div>    
             <div>
                 
             </div>
             
-            <div className='w-[4400px] sticky z-50 pt-[30px] h-[1400px] overflow-y-hidden'>
+            <div className='w-[4400px] sticky z-50 pt-[30px] h-[700px] md:h-[1400px] overflow-y-hidden'>
             
     
                 {week.map((day,index) => {
@@ -336,7 +419,7 @@ const page = () => {
                     const isToday = day.toDateString() === todayRaw.toDateString();
 
                     return (
-                        <div key={index} className={`flex h-[200px] border flex-row justify-start border-gray-800   `}>
+                        <div key={index} className={`flex h-[100px] md:h-[200px] border flex-row justify-start border-gray-800   `}>
                             <div className='w-[175px] p-4 rounded-md  flex flex-col justify-start '>
 
                             
@@ -359,15 +442,15 @@ const page = () => {
                         {dayTasks.map((task,taskIdx) => (
                             <div
                             key={taskIdx}
-                            className='absolute top-2  p-4 h-[calc(100%-1rem)] rounded-md  text-black text-center text-sm overflow-hidden cursor-pointer hover:opacity-90 transition-opacity'
+                            className='absolute top-2  p-4 h-[calc(100%-1rem)] mx-2 rounded-md  text-[#c6c7c4] text-center text-sm flex items-center justify-center flex-col space-y-3 overflow-hidden cursor-pointer  hover:opacity-90 transition-opacity'
                             style={getTaskStyle(task)}
                             title={`${task.name}\n${task.start_time} - ${task.end_time}\n${task.no_of_hours}h`}
                         >
-                            <div className='font-semibold truncate'>{task.name}</div>
-                            <div className='text-xs opacity-90'>
+                            <div className='font-semibold truncate text-4xl '>{task.name}</div>
+                            <div className='text-xs opacity-90 text-[#e4d6a7]'>
                                 {task.start_time} - {task.end_time}
                             </div>
-                            <div className='text-xs opacity-75'>
+                            <div className='text-xs text-[#e4d6a7] opacity-75'>
                                 {task.no_of_hours}h
                             </div>
                         </div>
