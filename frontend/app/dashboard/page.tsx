@@ -5,14 +5,13 @@ import { axiosApi } from '../lib/axiosApi';
 
 const page = () => {
   const [width,setWidth] = useState<number>();
-  const [userId,setUserId] = useState<number>();
   const [tasks,setTasks] = useState<any[]>([]);
   const [categories,setCategories] = useState<any[]>([]);
   const [activeTask,setActiveTasks] = useState<any>(null);
 
   const fetchTasks = async () => {
     try {
-      const res = await axiosApi.get(`/task/${userId}`);
+      const res = await axiosApi.get(`/task`);
       console.log("Data loaded successfully from Task table:",res.data);
       setTasks(res.data);
     }
@@ -33,11 +32,11 @@ const page = () => {
   }
 
   useEffect(()=>{
-    if (userId){
+   
       fetchCategories();
       fetchTasks();
-    }
-  },[userId]);
+    
+  },[]);
 
   const getWeeklyData = () => {
     const categoryHours:{[key:string]:number} = {};
@@ -260,10 +259,6 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
 
   useEffect(() => {
     setWidth(window.innerWidth)
-    const storedUserId = localStorage.getItem('userId');
-    if (storedUserId){
-      setUserId(Number(storedUserId))
-    }
   },[])
   return (
     <div>

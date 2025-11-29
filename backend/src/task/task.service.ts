@@ -16,7 +16,7 @@ export class TaskService {
         @InjectRepository(Category)
         private categoryRepo:Repository<Category>
     ) {}
-    async create(dto:createTaskDto){
+    async create(dto:createTaskDto,userId:number){
         const task = new Task();
         task.name= dto.name;
         task.start_time = dto.start_time;
@@ -25,7 +25,7 @@ export class TaskService {
         task.formattedDate = dto.formattedDate;
         task.no_of_hours = dto.no_of_hours;
 
-        const user = await this.userRepo.findOne({where: { id:dto.userId}});
+        const user = await this.userRepo.findOne({where: { id:userId}});
         if (!user){
             throw new NotFoundException("User not found");
         }

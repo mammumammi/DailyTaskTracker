@@ -41,9 +41,9 @@ export class LoginService {
         }
 
         const payload = {username:user.username,sub:user.id};
-        const token = await this.jwtService.sign(payload);
+        const token =  this.jwtService.sign(payload);
 
-        return {access_token:token,userId:user.id};
+        return {access_token:token};
     }
 
 }

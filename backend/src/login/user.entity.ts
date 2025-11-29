@@ -1,3 +1,4 @@
+import { Category } from "src/entities/category.entity";
 import { Task } from "src/entities/task.entity";
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -15,5 +16,7 @@ export class User{
     @OneToMany( ()=> Task,(tasks) =>tasks.user)
     tasks:Task[];
 
+    @OneToMany(() => Category, (category) => category.user)
+    categories:Category[];
 
 }

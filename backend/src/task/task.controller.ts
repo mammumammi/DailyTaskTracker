@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { createTaskDto } from './createTask.dto';
 import { TaskService } from './task.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('task')
 export class TaskController {
@@ -8,11 +9,14 @@ export class TaskController {
     constructor(private readonly taskService:TaskService){}
 
     @Post()
-    createTask(@Body() dto:createTaskDto ){
-        return this.taskService.create(dto);
+    @UseGuards(JwtAuthGuard)
+    createTask(@Body() dto:createTaskDto,@Req() req ){
+        return this.taskService.create(dto,req.user.sub);
     }
-    @Get(':userId')
-    findAll(@Param('userId') userId:string){
-        return this.taskService.FindAll(Number(userId));
+
+    @UseGuards(JwtAuthGuard)
+    @Get()
+    findAll(@Req() req ){
+        return this.taskService.FindAll(Number(req.user.sub));
     }
 }

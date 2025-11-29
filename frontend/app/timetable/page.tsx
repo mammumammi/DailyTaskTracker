@@ -15,7 +15,7 @@ const page = () => {
     const [formattedDate,setFormattedDate] = useState<string>("");
     const [no_of_hours,setNo_of_hours] = useState<number>(0);
     const [catId,setCatId] = useState<number>();
-    const [userId,setUserId] = useState<number>();
+    
     
     const [currentWeekStart,setCurrentWeekStart] = useState<Date>(new Date());
     const [week,setWeek] = useState<Date[]>([]);
@@ -36,8 +36,8 @@ const page = () => {
 
     const fetchTask = async () => {
         try {
-            if (!userId) return;
-            const res = await axiosApi.get(`/task/${userId}`);
+            
+            const res = await axiosApi.get(`/task`);
             console.log("fetched successfully:",res.data);
             setTaskList(res.data);
         }
@@ -73,7 +73,6 @@ const page = () => {
                 formattedDate:formatted,
                 no_of_hours: hours,
                 categoryIds: catId ? [catId] : [],
-                userId:userId
             });
             setTaskName("");
             setStartTime("00:00");
@@ -92,11 +91,12 @@ const page = () => {
     }
     const submitCat = async () => {
         try {
-            const res  = await axiosApi.post("/category",{
+            const res  = await axiosApi.post(`/category`,{
                 colour:catColour,
-                name:catName
+                name:catName,
             })
             console.log("category created!");
+            fetchCategory();
         }
         catch(err){
             console.error("error when inputting category:",err);
@@ -106,7 +106,8 @@ const page = () => {
     
     const fetchCategory = async () =>{
         try {
-            const res = await axiosApi.get('/category');
+            
+            const res = await axiosApi.get(`/category`);
             console.log("Categories already created are:",res.data);
             setFetchedCat(res.data);
         }
@@ -178,10 +179,6 @@ const page = () => {
     }
 
     useEffect( ()=> {
-        const storedUserId = localStorage.getItem('userId');
-        if (storedUserId){
-            setUserId(Number(storedUserId));
-        }
         const today = new Date();
         const dayIndex = today.getDay();
         const diffToMonday = dayIndex === 0 ? -6 : 1 - dayIndex;
@@ -195,12 +192,17 @@ const page = () => {
             return d;
         })
         setWeek(generatedWeek);
-        fetchCategory();
+        
     },[]);
 
-    useEffect(()=>{
-        fetchTask();
-    },[userId])
+    useEffect(() => {
+     
+        
+        
+            fetchCategory();
+            fetchTask();
+       
+    }, []);
   return (
     <div className='mt-[20px]'>
         <Navbar/>

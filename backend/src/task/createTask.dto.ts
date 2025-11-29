@@ -6,5 +6,5 @@ export class createTaskDto{
     formattedDate:string;
     no_of_hours:number;
     categoryIds:number[];
-    userId:number;
+
 }

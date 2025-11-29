@@ -8,6 +8,7 @@ import { TaskModule } from './task/task.module';
 import { CategoryModule } from './category/category.module';
 import { Task } from './entities/task.entity';
 import { Category } from './entities/category.entity';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -21,7 +22,7 @@ import { Category } from './entities/category.entity';
       extra: {
         socketPath: '/System/Volumes/Data/private/tmp/mysql.sock',
       },
-    }),LoginModule, TaskModule, CategoryModule
+    }),LoginModule, TaskModule, CategoryModule,AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
