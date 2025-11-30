@@ -9,20 +9,10 @@ import { CategoryModule } from './category/category.module';
 import { Task } from './entities/task.entity';
 import { Category } from './entities/category.entity';
 import { AuthModule } from './auth/auth.module';
+import { typeOrmConfig } from './ormconfig';
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type:'mysql',
-      host: 'localhost',
-      username: 'root',
-      password: '',
-      database: 'tracker_db',
-      entities: [User,Task,Category],
-      synchronize:true,
-      extra: {
-        socketPath: '/System/Volumes/Data/private/tmp/mysql.sock',
-      },
-    }),LoginModule, TaskModule, CategoryModule,AuthModule
+    TypeOrmModule.forRoot(typeOrmConfig),LoginModule, TaskModule, CategoryModule,AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
