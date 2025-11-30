@@ -4,6 +4,7 @@ import { supabase } from "./lib/supabaseClient";
 import { axiosApi } from "./lib/axiosApi";
 import { useRouter } from "next/navigation";
 import { Oswald } from "next/font/google";
+const siteUrl = 'https://productive-wife-frontend-p65wf7hwa-aashins-projects-c166e660.vercel.app/';
 export default function Login() {
 
   const [width,setWidth] = useState<number>(0);

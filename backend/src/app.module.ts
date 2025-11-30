@@ -10,8 +10,10 @@ import { Task } from './entities/task.entity';
 import { Category } from './entities/category.entity';
 import { AuthModule } from './auth/auth.module';
 import { typeOrmConfig } from './ormconfig';
+import {ConfigModule} from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot(typeOrmConfig),LoginModule, TaskModule, CategoryModule,AuthModule
   ],
   controllers: [AppController],

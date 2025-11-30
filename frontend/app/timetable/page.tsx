@@ -34,7 +34,7 @@ const page = () => {
     const todayRaw = new Date();
     const [sched,setSched] = useState<boolean>(false);
     const [catOpen,setCatOpen] = useState<boolean>(false);
-    const options = { day:"numeric",month:"long",year:"numeric"};
+    const options = { day:"numeric" as const,month:"long" as const,year:"numeric" as const};
     const today = todayRaw.toLocaleDateString("en-IN",options);
     console.log(today);
 

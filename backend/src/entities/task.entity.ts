@@ -11,10 +11,10 @@ export class Task{
     @Column()
     name:string;
 
-    @Column({type:"time"})
+    @Column()
     start_time:string;
 
-    @Column({ type:"time"})
+    @Column()
     end_time:string;
 
     @Column({type:"timestamp"})
