@@ -1,14 +1,15 @@
 "use client";
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Navbar from '../components/Navbar';
 import { axiosApi } from '../lib/axiosApi';
+import gsap from 'gsap';
 
 const page = () => {
   const [width,setWidth] = useState<number>();
   const [tasks,setTasks] = useState<any[]>([]);
   const [categories,setCategories] = useState<any[]>([]);
   const [activeTask,setActiveTasks] = useState<any>(null);
-
+  const taskRef = useRef<HTMLDivElement>(null);
   const fetchTasks = async () => {
     try {
       const res = await axiosApi.get(`/task`);
@@ -35,7 +36,17 @@ const page = () => {
    
       fetchCategories();
       fetchTasks();
-    
+      const elements = ['.dashmain',
+        taskRef.current,
+        '.dash', '.dash1', '.dash2', '.dash3', '.dash4',
+        '.dash5', '.dash6', '.dash7', '.dash8', '.dash9', '.dash10'
+      ].filter(Boolean); 
+        gsap.to(elements,{
+          opacity:1,
+          duration:0.5,
+          stagger:0.2,
+          ease:'power3.inOut'
+        })
   },[]);
 
   const getWeeklyData = () => {
@@ -181,8 +192,8 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
     if (total == 0){
       return (
         <div className='flex items-center justify-center'>
-          <h3 className='text-xl font-semibold mb-4'>{title}</h3>
-          <p>No Tasks done today</p>
+          <h3 className='text-xl font-semibold mb-4 '>{title}</h3>
+          <p className='text-center mt-[100px] -ml-[200px]'>No Tasks done today</p>
         </div>
       )
     }
@@ -261,15 +272,15 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
     setWidth(window.innerWidth)
   },[])
   return (
-    <div className=''>
+    <div className='opacity-0 dashmain'>
       <Navbar/>
       <div className='md:ml-[10vw] p-[25px] md:p-[15px] space-y-5'>
-        <p className='text-3xl'>Dashboard</p>
+        <p className='text-3xl opacity-0 dash' >Dashboard</p>
         
         {/* Active Task Banner */}
         {activeTask && (
           <div 
-            className='p-0 rounded-lg border-l-4'
+            className='p-0 rounded-lg border-l-4 dash1 opacity-0'
             style={{ 
               borderColor: activeTask.categories[0]?.colour || '#10b981',
               backgroundColor: `${activeTask.categories[0]?.colour}20`
@@ -277,17 +288,17 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
           >
             <div className='flex items-center justify-between flex-wrap gap-2'>
               <div>
-                <div className='flex items-center py-4 px-1  gap-2'>
+                <div className='flex items-center py-4 px-1 dash2 opacity-0 gap-2'>
                   <div className='w-2 h-2 rounded-full bg-green-500 animate-pulse' />
                   <span className='text-sm font-semibold text-green-400'>ACTIVE NOW</span>
                 </div>
-                <h3 className='text-xl font-bold mt-1 px-2'>{activeTask.name}</h3>
-                <p className='text-sm text-gray-400 mt-1 p-2'>
+                <h3 className='text-xl font-bold mt-1 px-2 dash3 opacity-0'>{activeTask.name}</h3>
+                <p className='text-sm text-gray-400 mt-1 p-2 dash4 opacity-0'>
                   {activeTask.start_time} - {activeTask.end_time} ({activeTask.no_of_hours}h)
                 </p>
               </div>
               <div 
-                className='px-3 py-1 mr-4 mb-4 rounded-full text-sm font-semibold text-[#14213d]'
+                className='px-3 py-1 mr-4 mb-4 rounded-full text-sm dash5 opacity-0 font-semibold text-[#14213d]'
                 style={{ backgroundColor: activeTask.categories[0]?.colour || '#6b7280' }}
               >
                 {activeTask.categories[0]?.name}
@@ -299,8 +310,8 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
         {/* Charts */}
         <div className='flex flex-col md:flex-row mt-[20px] gap-5'>
           {/* Box1 - Weekly Bar Chart */}
-          <div className='w-full md:w-[65%] h-[300px] bg-[#041f1e] rounded-md'>
-            <BarChart 
+          <div className='w-full md:w-[65%] h-[300px] bg-[#041f1e] dash6 opacity-0 rounded-md'>
+            <BarChart className="dash7 opacity-0"
               data={weeklyData} 
               title="Weekly Overview" 
               totalHours={totalWeeklyHours}
@@ -308,8 +319,8 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
           </div>
           
           {/* Box2 - Daily Pie Chart */}
-          <div className='w-full md:w-[35%] h-[300px] bg-[#041f1e] rounded-md'>
-            <PieChart 
+          <div className='w-full md:w-[35%] h-[300px] dash8 opacity-0 bg-[#041f1e] rounded-md'>
+            <PieChart className="dash9 opacity-0"
               data={dailyData} 
               title="Today's Activities"
             />
@@ -319,7 +330,7 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
         {/* Today's Tasks */}
         <div className='flex flex-col md:flex-row gap-5 text-center justify-center items-stretch'>
           {todayTasks.length === 0 ? (
-            <div className='w-full bg-[#041f1e] rounded-lg p-8 text-gray-400'>
+            <div className='w-full bg-[#041f1e] rounded-lg p-8 dash10 opacity-0 text-gray-400'>
               No tasks scheduled for today
             </div>
           ) : (
@@ -328,19 +339,19 @@ const totalDailyHours = Object.values(dailyData).reduce((a, b) => (a as number) 
               
               return (
                 <div
-                  key={task.id}
+                  key={task.id} ref={taskRef}
                   className={`flex-1 bg-[#041f1e] rounded-lg p-4 border-2 transition-all ${
                     isActive ? 'border-green-500' : 'border-transparent'
                   }`}
                 >
-                  <div className='flex items-start justify-between mb-2'>
+                  <div className='flex items-start justify-between mb-2' >
                     <h3 className='font-semibold text-lg'>{task.name}</h3>
                     {isActive && (
                       <div className='w-2 h-2 rounded-full bg-green-500 animate-pulse' />
                     )}
                   </div>
                   
-                  <div className='flex items-center justify-center gap-2 text-sm text-gray-400 mb-3'>
+                  <div className='flex items-center justify-center gap-2 text-sm text-gray-400 mb-3' >
                     <span>{task.start_time}</span>
                     <span>→</span>
                     <span>{task.end_time}</span>

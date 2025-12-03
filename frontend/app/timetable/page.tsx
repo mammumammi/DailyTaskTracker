@@ -1,15 +1,16 @@
 "use client";
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { axiosApi } from '../lib/axiosApi';
 import Navbar from '../components/Navbar';
+import gsap from 'gsap';
 
 const page = () => {
     
     const [isTimerRunning,setIsTimerRunning] = useState<boolean>(false);
     const [timerSeconds,setTimerSeconds] = useState<number>(0);
     const [timerStartTime,setTimerStartTime] = useState<Date | null>(null);
-    
+    const catRef = useRef<HTMLDivElement>(null);
     const [catName,setCatName] = useState<string>("");
     const [catColour,setCatColour] = useState<string>("#ffffff");
     const [fetchedCat,setFetchedCat] = useState<{id:number; name:string; colour:string;}[]>([]);
@@ -25,6 +26,7 @@ const page = () => {
     const [selectCat,setSelectCat] = useState<boolean>(false);
     const [currentWeekStart,setCurrentWeekStart] = useState<Date>(new Date());
     const [week,setWeek] = useState<Date[]>([]);
+    const [width,setWidth] = useState<number>(0);
     const hours = Array.from({length:24},(_,i) => {
         const hour = i %12 === 0 ? 12: i%12;
         const ampm = i<12 ? "AM" : "PM";
@@ -240,6 +242,8 @@ const page = () => {
     }
 
     useEffect( ()=> {
+        const currentWidth = window.innerWidth;
+        setWidth(currentWidth);
         const today = new Date();
         const dayIndex = today.getDay();
         const diffToMonday = dayIndex === 0 ? -6 : 1 - dayIndex;
@@ -262,21 +266,27 @@ const page = () => {
             
             fetchCategory();
             fetchTask();
+            const elements = [catRef.current,'.time','.time1','.time3','.time4','.time5'].filter(Boolean);
+            gsap.to(elements,{
+                opacity:1,
+                duration:0.4,
+                stagger:0.3
+            })
        
     }, []);
   return (
     <div className=' bg-[#1b1b1e]  h-[100vh] overflow-hidden relative'>
         <Navbar/>
-        <div className='md:ml-[10vw]'>
-        <p className='bg-[#1b1b1e] py-1 mt-5'>Activity Chart</p>
-        <div className='flex flex-col  md:space-y-5 md:py-[50px]'>
+        <div className='md:ml-[10vw]   '>
+        <p className='bg-[#1b1b1e] py-3 px-5 mt-5 text-4xl'>Activity Chart</p>
+        <div className='flex flex-col  md:space-y-5 md:pb-[50px]'>
         <div className='bg-[#1b1b1e] relative h-[45vh] md:h-[30vh]'>
             <div className='fixed'>
             <div className='bg-[#1b1b1e] md:p-4 w-[84vw]   rounded-lg mt-8 '>
-            <h3 className='text-lg font-semibold mb-3 text-center'>Categories</h3>
+            <h3 className='text-lg font-semibold mb-3 text-center time opacity-0'>Categories</h3>
             <div className='flex flex-wrap gap-4 text-center justify-center items-center'>
             {fetchedCat.map(cat => (
-                <div key={cat.id} className='flex items-center gap-2'>
+                <div key={cat.id} className='flex items-center gap-2  time6' ref={catRef}>
                     <div 
                     className='w-4 h-4 rounded' 
                     style={{backgroundColor: cat.colour}}
@@ -286,25 +296,25 @@ const page = () => {
             ))}
             </div>
         </div>
-       <div className='flex items-center justify-between  p-1 md:p-2 mt-5 w-[88vw]'>
-            <button onClick={goToPreviousWeek} className='p-2 bg-[#192932] rounded-md'>← Previous</button>
-            <div className='text-center'>
+       <div className='flex items-center justify-between  p-1 md:p-2 mt-5 w-[100vw] md:w-[88vw]'>
+            <button onClick={goToPreviousWeek} className='ml-2  p-2 md:p-3 bg-[#2f184b] opacity-0 time4 rounded-md'>Previous Week</button>
+            <div className='flex  items-center flex-col time2 opacity-0 justify-center ml-7'>
                 <p className='mb-1'>{today}</p>
                 <p>{week[0]?.toLocaleDateString("en-IN",{month:"short",day:"numeric"})} - 
                     {week[6]?.toLocaleDateString("en-IN",{month:"short",day:"numeric",year:"numeric"})}
                 </p>
             </div>
-            <div className='flex gap-2'>
-                <button className='p-2 bg-[#38040e] rounded-md' onClick={goToToday}>Today</button>
-                <button className='p-2 bg-[#001c55] rounded-md' onClick={goToNextWeek}>Next →</button>
+            <div className='flex gap-3'>
+                {width > 768 && <button className=' p-2 md:p-3 bg-[#2f184b] time3 opacity-0 rounded-md' onClick={goToToday}>This Week</button>}
+                <button className='p-2 mr-2 md:mr-auto md:p-3 bg-[#2f184b] time5 opacity-0 rounded-lg text-center' onClick={goToNextWeek}>Next Week</button>
             </div>
         </div>     
             
         <div className='md:left-[65%] md:top-[5%] justify-center md:absolute z-50  p-5 relative' >
-            { !sched &&   <button className='bg-[#471766] px-4 md:px-2 md:h-auto  p-[5px] md:w-[200px] md:left-[15vw] md:absolute text-[#F1F0EA] text-2xl rounded-md block mx-auto' onClick={() => {
+            { !sched &&   <button className='bg-[#2f184b] px-4 md:px-2 md:h-auto  p-[5px] md:w-[200px] md:left-[15vw] md:absolute text-[#F1F0EA] text-2xl rounded-md block mx-auto time1 opacity-0' onClick={() => {
                 setSched(!sched)
             }}>Create Schedule</button> }
-            { sched && <div className='space-y-5  bg-[#1a1423]  md:ml-[10vw]'>
+            { sched && <div className='space-y-5  bg-[#1a1423]  md:ml-[5vw]'>
                 <div className='space-y-3 -mt-[25vh] p-3 md:-mt-[70px]   z-75 bg-[#1a1423] flex flex-col'>
                 {/* Start Timer function or Set time for past activities */}
                 <input type="text" className='border rounded-md p-1 text-gray-300' placeholder=' Activity Name' value={taskName}
@@ -320,12 +330,12 @@ const page = () => {
         <div className='text-white pr-[15px] cursor-pointer' onClick={ () =>{setOpen(!open)}}>▼</div>
         </div>
         {open && 
-        <div className='flex flex-col rounded-md overflow-scroll  bg-[#2C2A2F] '>
+        <div className='flex flex-col rounded-md overflow-scroll hide-scrollbar bg-[#2C2A2F] '>
             <div>
             <div className='cursor-pointer p-2'  onClick={() => setCatOpen(!catOpen)} >Create a category</div>
             {catOpen && 
             <div className='flex flex-col'>
-                <div className='flex flex-row justify-around mb-3'>
+                <div className='flex flex-row justify-around mb-3 p-2'>
                     <input type="text" placeholder=' name' className='border border-gray-500 rounded-md' value={catName} onChange={(e) => setCatName(e.target.value)} />
                     <div className='flex flex-row'>
                     <label htmlFor="color" className='text-gray-400 mr-2'>Color</label>
@@ -380,7 +390,7 @@ const page = () => {
             </div>
         </div>
     )}
-                <button className='bg-[#471766] text-[#F1F0EA] p-[5px] rounded-md' onClick={startTimer}>{isTimerRunning ? '⏸ Stop Timer' : '▶ Start Timer Now'}</button>
+                <button className='bg-[#2f184b] text-[#F1F0EA] p-[5px] rounded-md' onClick={startTimer}>{isTimerRunning ? '⏸ Stop Timer' : '▶ Start Timer Now'}</button>
                 <div className='md:space-x-3 md:space-y-0 space-y-3 flex md:flex-row flex-col'>
                     <input type="time" className='border p-1 rounded-md text-gray-300' placeholder=' Starting Time ' value={startTime}
                     onChange={(e) => setStartTime(e.target.value)}
@@ -401,7 +411,7 @@ const page = () => {
         </div>
         </div>
         </div>
-        <div className='relative h-[55vh] bg-[#080708] md:h-[70vh] overflow-scroll hide-scrollbar'>
+        <div className='relative h-[55vh] bg-[#080708] md:h-[70vh] overflow-scroll hide-scrollbar opacity-0 time5'>
             <div className='flex flex-row z-0 left-[175px] absolute bg-[#080708]'>
                 {hours.map((t,i) => (
                     <div className='border  border-gray-800 w-[175px]  h-[715px] md:h-[1430px] px-[8px]'  key={i}>{t}</div>
@@ -411,7 +421,7 @@ const page = () => {
                 
             </div>
             
-            <div className='w-[4400px] sticky z-50 pt-[30px] h-[700px] md:h-[1400px] overflow-y-hidden'>
+            <div className='w-[4400px] sticky z-50 pt-[30px] h-[730px] md:h-[1530px] overflow-y-hidden'>
             
     
                 {week.map((day,index) => {
@@ -423,7 +433,7 @@ const page = () => {
                             <div className='w-[175px] p-4 rounded-md  flex flex-col justify-start '>
 
                             
-                            <div className={`text-2xl ${isToday ? 'text-[#10b981]' : ''}`}>{day.toLocaleDateString("en-IN",{day:"numeric",weekday:'long'})}</div>
+                            <div className={`text-2xl ${isToday ? 'text-[#ffceff]' : ''}`}>{day.toLocaleDateString("en-IN",{day:"numeric",weekday:'long'})}</div>
                             <div>{day.toLocaleDateString("en-IN",{month:"long"})}</div>
                             {dayTasks.length > 0 && (
                                 <div>{dayTasks.length} task{dayTasks.length > 1 ? 's':""}</div>

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Saira} from "next/font/google";
+import { Saira,Lavishly_Yours} from "next/font/google";
 import "./globals.css";
 
 const oswald = Saira({
+  subsets: ["latin"],
   weight: ["500"]
 })
-
 
 
 export const metadata: Metadata = {
