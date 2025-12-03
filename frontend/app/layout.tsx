@@ -10,6 +10,11 @@ const oswald = Saira({
 
 export const metadata: Metadata = {
   title: "TaskTracker",
+  icons: {
+    icon: [
+      {url: "/logo.png",sizes: "32x32", type: "image/png" }
+    ]
+  },
   description: "",
 };
 
