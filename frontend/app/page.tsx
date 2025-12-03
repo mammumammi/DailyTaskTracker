@@ -240,9 +240,9 @@ export default function Login() {
           </div>
         </div>
         <div className="space-y-[15px] mt-[40px] flex flex-col ">
-          <button className="bg-[#e8ddb5] text-[#160f29] opacity-0 log1 rounded-[15px] w-[250px] p-3 text-1xl hover:text-[#edeec9] hover:bg-[#160f29] hover:border-[#edeec9] border duration-500  " onClick={handleLogin} >Login</button>
-          <button className="bg-[#e8ddb5] text-[#160f29] rounded-[15px] w-[250px] opacity-0 log2 p-3 text-1xl hover:text-[#edeec9] hover:bg-[#160f29] hover:border-[#edeec9] border duration-500 " onClick={handleSignup} >Sign Up</button>
-          <button className="bg-[#e8ddb5] text-[#160f29] rounded-[15px] w-[250px] p-3 text-1xl opacity-0 log3 hover:text-[#edeec9] hover:bg-[#160f29] hover:border-[#edeec9] border duration-500 flex flex-row items-center justify-center " onClick={signInWithGoogle} ><img
+          <button className="bg-[#e8ddb5] text-[#160f29] opacity-0 log1 rounded-[15px] w-[250px] p-3 text-1xl hover:text-[#edeec9] hover:bg-[#160f29] hover:border-[#edeec9] cursor-pointer border duration-500  " onClick={handleLogin} >Login</button>
+          <button className="bg-[#e8ddb5] text-[#160f29] rounded-[15px] w-[250px] opacity-0 cursor-pointer log2 p-3 text-1xl hover:text-[#edeec9] hover:bg-[#160f29] hover:border-[#edeec9] border duration-500 " onClick={handleSignup} >Sign Up</button>
+          <button className="bg-[#e8ddb5] text-[#160f29] rounded-[15px] w-[250px] p-3 text-1xl opacity-0  cursor-pointer log3 hover:text-[#edeec9] hover:bg-[#160f29] hover:border-[#edeec9] border duration-500 flex flex-row items-center justify-center " onClick={signInWithGoogle} ><img
           src='google.svg' className="mr-2 object-fill h-[25px]"
           />Continue with Google </button>
         </div>

@@ -47,8 +47,8 @@ const Navbar = () => {
             </div>
         </div> :
 
-            <div className='w-full bg-[#0c1820] '>
-                <button onClick={fullscreen} className='bg-white' ><img src='/iconnew.png' alt="" className='h-[25px]' /></button>
+            <div className='w-full bg-[#0c1820] text-[#f4e9cd] '>
+                <button onClick={fullscreen} className='' >Menu</button>
                 {full && <div className='space-y-3 flex flex-col h-[100dvh]  '>
                         <div className='cursor pointer' onClick={ () => {
                             router.push('/timetable')
