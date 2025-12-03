@@ -94,7 +94,7 @@ export default function Login() {
     const {data, error} = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${process.env.NEXT_PUBLIC_BACKEND_URL}dashboard` // ✅ Valid URL
+        redirectTo: `${process.env.NEXT_PUBLIC_FRONTEND_URL}dashboard` // ✅ Valid URL
       }
     });
     
