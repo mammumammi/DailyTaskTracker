@@ -136,20 +136,13 @@ export default function Login() {
             video.play();
           }
         },"<")
-        .to([".t1", ".t2", ".t3"], {
-          opacity: 1,
-          duration: 3,
-          stagger: {
-            each: 2,
-            onComplete: (self) => {
-              gsap.to(self.targets()[0], {
-                opacity: 0,
-                duration: 1,
-              });
-            }
-          },
-          ease: "power3.inOut"
-        }).to('.mainPage',{
+        .fromTo(".t1", { opacity: 0 }, { opacity: 1, duration: 1 })
+      .to(".t1", { opacity: 0, duration: 1 }, "+=1")
+
+      .fromTo(".t2", { opacity: 0 }, { opacity: 1, duration: 1 })
+      .to(".t2", { opacity: 0, duration: 1 }, "+=1")
+
+      .fromTo(".t3", { opacity: 0 }, { opacity: 1, duration: 1 }).to('.mainPage',{
           opacity:0,
           duration:1,
           ease:'power4.in'
