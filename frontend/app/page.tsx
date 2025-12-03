@@ -94,7 +94,7 @@ export default function Login() {
     const {data, error} = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/dashboard` // ✅ Valid URL
+        redirectTo: `${process.env.NEXT_PUBLIC_BACKEND_URL}dashboard` // ✅ Valid URL
       }
     });
     
@@ -225,7 +225,7 @@ export default function Login() {
 
   return (
     <div className={`h-full flex md:flex-row mainPage relative flex-col-reverse py-[25px] px-[25px] w-[100vw]  justify-center mt-[50px] items-center ${width < 768 ? '' : ''} `}>
-      <div className=" flex items-center flex-col w-[100vw]">
+      <div className=" flex items-center flex-col w-[100vw] relative z-50">
         <div className="space-y-[10px]">
           <div className={`${lavishlyYours.className} text-4xl opacity-0 introFont font-semibold flex flex-col space-y-2`} >
 
@@ -234,9 +234,9 @@ export default function Login() {
           </div>
           <div className="space-y-2 mt-[50px]  ">
             <p className="ml-1 opacity-0 em">Email</p>
-            <input type="text" placeholder=" Enter email" value={username} onChange={(e) => setUsername(e.target.value)} className="p-2 em1 w-[250px] opacity-0 border rounded-[10px] border-[#6c757d]" />
+            <input type="text" placeholder=" Enter email" value={username} onChange={(e) => setUsername(e.target.value)} className="p-2 em1 w-[250px] opacity-0 z-50 border rounded-[10px] border-[#6c757d]" />
             <p className="ml-1 ps mt-5 opacity-0">Password</p>
-            <input type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 opacity-0 ps1 w-[250px] border rounded-[10px] border-[#6c757d]" />
+            <input type="password" placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} className="p-2 opacity-0 ps1 w-[250px] border z-50 rounded-[10px] border-[#6c757d]" />
           </div>
         </div>
         <div className="space-y-[15px] mt-[40px] flex flex-col ">
@@ -255,7 +255,7 @@ export default function Login() {
             <video src='https://res.cloudinary.com/ddbkg48oy/video/upload/v1764760437/new_gknyh6.mp4' className="absolute object-cover rounded-2xl  h-full" ref={videoRef1} />
 
         </div> : <div className="vid2 opacity-0 ">
-        <video src='https://res.cloudinary.com/ddbkg48oy/video/upload/v1764760437/new_gknyh6.mp4' className=" w-[80vw] mx-auto rounded-[10px] h-auto opacity-0 -mt-10" ref={videoRef2} /></div>}
+        <video src='https://res.cloudinary.com/ddbkg48oy/video/upload/v1764760437/new_gknyh6.mp4' className=" w-[80vw] mx-auto rounded-[10px] h-auto opacity-0 -mt-10 -z-10" ref={videoRef2} /></div>}
         
           
           
