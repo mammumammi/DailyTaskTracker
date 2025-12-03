@@ -14,7 +14,8 @@ const lavishlyYours = Lavishly_Yours({
 export default function Login() {
   const [playVideo,setPlayVideo] = useState<boolean>(false);
   const [startAnimation,setStartAnimation] = useState<boolean>(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef1 = useRef<HTMLVideoElement>(null);
+  const videoRef2 = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const googleRef = useRef<HTMLVideoElement>(null);
   const [width,setWidth] = useState<number>(0);
@@ -108,8 +109,8 @@ export default function Login() {
   const handlePlayVideo = () => {
     setPlayVideo(true);
     setTimeout(() => {
-      if (videoRef.current && containerRef.current){
-        const video = videoRef.current;
+      if (videoRef1.current && containerRef.current){
+        const video = videoRef1.current;
 
      
 
@@ -120,6 +121,8 @@ export default function Login() {
           x:-200
         }).to(containerRef.current,{
           position:'absolute',
+          borderRadius: '1rem',
+          overflow:'hidden',
           right:'5vw',
           width:'90vw',
           height:"85vh",
@@ -128,7 +131,53 @@ export default function Login() {
         })
         .to([video],{
           width:'90vw',
+          borderRadius: '1rem',
           height:'85vh',
+          duration:3,
+          objectPosition:'right',
+          objectFit:'cover',
+          onStart: () => {
+            video.play();
+          }
+        },"<")
+        .fromTo(".t1", { opacity: 0 }, { opacity: 1, duration: 1 })
+      .to(".t1", { opacity: 0, duration: 1 }, "+=1")
+
+      .fromTo(".t2", { opacity: 0 }, { opacity: 1, duration: 1 })
+      .to(".t2", { opacity: 0, duration: 1 }, "+=1")
+
+      .fromTo(".t3", { opacity: 0 }, { opacity: 1, duration: 1 }).to('.mainPage',{
+          opacity:0,
+          duration:1,
+          ease:'power4.in'
+        });
+        
+      }
+
+      if (videoRef2.current && containerRef.current){
+        const video = videoRef2.current;
+
+     
+
+        const tl = gsap.timeline();
+        tl.to(['.introFont','.em','.em1','.ps','.ps1','.log1','.log2','.log3'],{
+          autoAlpha:0,
+          duration:0.5,
+          x:-200
+        }).fromTo(containerRef.current,{y:-50,x:0,opacity:0},{
+          opacity:1,
+          position:'absolute',
+          y:0 ,
+          right:'5vw',
+          width:'90vw',
+          height:"95dvh",
+          duration:3,
+          ease:'power3.inOut'
+        })
+        .to([video],{
+          width:'90vw',
+          height:'95dvh',
+          opacity:1,
           duration:3,
           objectPosition:'right',
           objectFit:'cover',
@@ -167,7 +216,7 @@ export default function Login() {
       duration:0.5,
       ease:'power4.in',
       stagger:0.2
-    }).to('.vid',{
+    }).to(['.vid1','.vid2'],{
       opacity:1,
       duration:1.7,
       ease:'power4.in'
@@ -175,7 +224,7 @@ export default function Login() {
   },[])
 
   return (
-    <div className="h-full flex md:flex-row mainPage relative flex-col-reverse py-[25px] px-[25px] w-[100vw]  justify-center mt-[50px] items-center ">
+    <div className={`h-full flex md:flex-row mainPage relative flex-col-reverse py-[25px] px-[25px] w-[100vw]  justify-center mt-[50px] items-center ${width < 768 ? '' : ''} `}>
       <div className=" flex items-center flex-col w-[100vw]">
         <div className="space-y-[10px]">
           <div className={`${lavishlyYours.className} text-4xl opacity-0 introFont font-semibold flex flex-col space-y-2`} >
@@ -199,19 +248,21 @@ export default function Login() {
         </div>
       </div>
       <div 
-        className="md:w-[65vw] md:h-[80vh] h-[30vh] w-[100vh] rounded-2xl relative text-center overflow-hidden" 
+        className={`md:w-[65vw] md:h-[80vh] h-[30vh] w-[100vh] rounded-2xl ${width < 768 ? 'absolute' : 'relative'} text-center `} 
         ref={containerRef}
       >
-        <div className="vid opacity-0">
-            <video src='https://res.cloudinary.com/ddbkg48oy/video/upload/v1764760437/new_gknyh6.mp4' className="absolute object-cover  h-full" ref={videoRef} />
+        {width>768 ? <div className="vid1 opacity-0 rounded-2xl ">
+            <video src='https://res.cloudinary.com/ddbkg48oy/video/upload/v1764760437/new_gknyh6.mp4' className="absolute object-cover rounded-2xl  h-full" ref={videoRef1} />
 
-        </div>
+        </div> : <div className="vid2 opacity-0 ">
+        <video src='https://res.cloudinary.com/ddbkg48oy/video/upload/v1764760437/new_gknyh6.mp4' className=" w-[80vw] mx-auto rounded-[10px] h-auto opacity-0 -mt-10" ref={videoRef2} /></div>}
+        
           
           
       </div>
-      <div className="absolute transform top-[65%] left-1/2 opacity-0 t1 text-4xl">To New Beginnings</div>
-      <div className="absolute transform top-[65%] left-1/2 opacity-0 t2 text-4xl">To A Better You</div>
-      <div className="absolute transform top-[65%] left-1/2 opacity-0 t3 text-4xl">From the current You</div>
+      <div className="absolute transform top-[65%] md:left-1/2 left-[20%] opacity-0 t1 text-4xl">To New Beginnings</div>
+      <div className="absolute transform top-[65%] md:left-1/2 left-[20%] opacity-0 t2 text-4xl">To A Better You</div>
+      <div className="absolute transform top-[65%] md:left-1/2 left-[16%] opacity-0 t3 text-4xl">From the current You</div>
     </div>
   );
 }
