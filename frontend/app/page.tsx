@@ -4,12 +4,7 @@ import { supabase } from "./lib/supabaseClient";
 import { axiosApi } from "./lib/axiosApi";
 import { gsap } from "gsap";
 import { useRouter } from "next/navigation";
-import { Oswald } from "next/font/google";
-import Image from "next/image";
-import { video } from "framer-motion/client";
 import { Lavishly_Yours } from "next/font/google";
-import staticGoogle from '../assets/staticGoogle.png';
-import { useGSAP } from "@gsap/react";
 const siteUrl = 'https://productive-wife-frontend-p65wf7hwa-aashins-projects-c166e660.vercel.app/';
 const lavishlyYours = Lavishly_Yours({
   weight: ["400"],
