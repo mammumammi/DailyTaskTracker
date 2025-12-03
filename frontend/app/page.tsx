@@ -141,8 +141,8 @@ export default function Login() {
           duration: 3,
           stagger: {
             each: 2,
-            onComplete: (animation) => {
-              gsap.to(animation.targets()[0], {
+            onComplete: (self) => {
+              gsap.to(self.targets()[0], {
                 opacity: 0,
                 duration: 1,
               });
