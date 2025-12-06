@@ -98,6 +98,7 @@ export default function Login() {
       }
     });
     
+    
     if (error) {
       console.log('Error in OAuth:', error.message);
       alert(`OAuth error: ${error.message}`); // ✅ User feedback
