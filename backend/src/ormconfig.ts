@@ -8,7 +8,7 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
     url: process.env.DATABASE_URL,
     entities: [User, Category, Task],
     autoLoadEntities:true,
-    synchronize: true, // Auto-create tables (disable in production!)
+    synchronize: false, // Auto-create tables (disable in production!)
     ssl: {
         rejectUnauthorized: false
     },
