@@ -402,7 +402,7 @@ const page = () => {
                 </div>
                 </div>
                 <div className='flex flex-row justify-center items-center'>
-                <div className='border p-[2px] bg-[#F1F0EA] text-black text-center rounded-md px-[4px] cursor-pointer' onClick={() => {setSched(!sched);
+                <div className='border p-[2px] bg-[#F1F0EA] text-black text-center rounded-md px-[4px] cursor-pointer' onClick={() => {setSched(false);
                     submitTask();
                 }}>Create</div>
                 </div>
